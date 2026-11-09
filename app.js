@@ -11,6 +11,7 @@ const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/users');
 const cors = require("cors");
 const {ALLOWED_ORIGINS} = require('./util/constants');
+const helmet = require('helmet');
 
 const app = express();
 
@@ -23,6 +24,8 @@ if (process.env.NODE_ENV === 'production') {
   console.info('originCheckMiddleware enabled');
   app.use(rateLimiterMiddleware);
   console.info('rateLimiterMiddleware enabled');
+  app.use(helmet());
+  console.info('helmet enabled');
 }
 
 // app.use(express.json());
