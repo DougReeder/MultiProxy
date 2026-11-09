@@ -6,7 +6,8 @@
     "node": "26"
   },
   "scripts": {
-    "start": "node --env-file=.env.local ./bin/www"
+    "start": "node --env-file=.env.local ./bin/www",
+    "build": "docker build . -f Dockerfile -t dougreeder/multiproxy:$(date -u +'%Y-%m-%d-%H-%M')"
   },
   "dependencies": {
     "cookie-parser": "~1.4.4",
