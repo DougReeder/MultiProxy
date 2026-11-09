@@ -5,10 +5,12 @@ const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const { createProxyMiddleware } = require('http-proxy-middleware');
 const { rateLimiterMiddleware } = require('./util/rateLimiterMiddleware');
+const { originCheckMiddleware } = require('./util/originCheckMiddleware');
 
 const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/users');
 const cors = require("cors");
+const {ALLOWED_ORIGINS} = require('./util/constants');
 
 const app = express();
 
@@ -17,6 +19,8 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
 if (process.env.NODE_ENV === 'production') {
+  app.use(originCheckMiddleware);
+  console.info('originCheckMiddleware enabled');
   app.use(rateLimiterMiddleware);
   console.info('rateLimiterMiddleware enabled');
 }
@@ -33,7 +37,7 @@ app.use(logger((tokens, req, res) => {
   return fields.join(' ');
 }));
 
-const corsOpenAI = cors({ origin: true, allowedHeaders: 'Content-Type, Authorization, Content-Length, Origin, X-Requested-With', methods: 'OPTIONS, POST', exposedHeaders: 'ETag', credentials: true, maxAge: 7200 });
+const corsOpenAI = cors({ origin: ALLOWED_ORIGINS, allowedHeaders: 'Content-Type, Authorization, Content-Length, Origin, X-Requested-With', methods: 'OPTIONS, POST', exposedHeaders: 'ETag', credentials: true, maxAge: 7200 });
 
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', indexRouter);
