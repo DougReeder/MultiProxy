@@ -4,6 +4,7 @@ const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const { createProxyMiddleware } = require('http-proxy-middleware');
+const { rateLimiterMiddleware } = require('./util/rateLimiterMiddleware');
 
 const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/users');
@@ -14,6 +15,11 @@ const app = express();
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
+
+if (process.env.NODE_ENV === 'production') {
+  app.use(rateLimiterMiddleware);
+  console.info('rateLimiterMiddleware enabled');
+}
 
 // app.use(express.json());
 // app.use(express.urlencoded({ extended: false }));
