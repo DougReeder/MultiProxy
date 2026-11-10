@@ -1,4 +1,4 @@
-# LLMProxy — A proxy server to hold the API_KEY for LLM access
+# MultiProxy — A proxy server to hold the API_KEY for LLM access
 
 Copyright © 2026 Doug Reeder
 This software is licensed under the GNU General Public License v3.0.
