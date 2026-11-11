@@ -50,7 +50,15 @@ app.options('/openai', corsOpenAI);
 app.use('/openai', corsOpenAI, createProxyMiddleware({
   target: process.env.OPEN_AI_URL,
   changeOrigin: true,
-  pathFilter: ['/chat/'],
+  pathFilter: ['/chat','/models'],
+  pathRewrite: (path) => {
+    const url = new URL(path, process.env.OPEN_AI_URL);
+    if (process.env.OPEN_AI_URL.includes('ibm.com')) {
+      url.pathname = url.pathname.replace(/chat\/completions/, 'chat');
+      if (!url.searchParams.has('version')) url.searchParams.set('version', '2024-10-08');
+    }
+    return url.pathname + url.search;
+  },
   headers: {Authorization: `Bearer ${process.env.OPEN_AI_API_KEY}`},
   followRedirects: true,
   logger: console,
